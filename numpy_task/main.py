@@ -1,3 +1,4 @@
+# @title Текст заголовка по умолчанию
 import numpy as np
 
 a = np.array([3, 2, 1], "uint8")
@@ -13,22 +14,18 @@ c = np.ones((1,1,1))
 assert c.ndim == 3 and c.sum() / c.size == 1
 
 d = np.arange(10)-5
-print(d)
 
 assert np.all(d == np.array([-5, -4, -3, -2, -1, 0, 1, 2, 3, 4]))
 
-e = np.arange(5)/4
-
+e = np.arange(0,1.2,0.25)
 assert np.all(e == np.array([0., 0.25, 0.5, 0.75, 1.0]))
 
 f = np.arange(5 * 5).reshape(5, 5)
-
-fc = np.hsplit(f[(f%10==1) | (f%10==3)],3)
-
+fc = f[::2,1::2]
 assert np.all(fc == np.array([[1, 3], [11, 13], [21, 23]]))
 
 g = np.ones((5, 3))
-gc = g.reshape(3, 5)[0]*3
+gc = g[:,0]*3
 
 assert np.all(gc == np.array([3., 3., 3., 3., 3.]))
 
@@ -65,12 +62,11 @@ oc = o.reshape(2,2)
 assert oc.ndim == 2 and oc.shape == (2, 2)
 
 p = np.array([1, 2, 3, 4])
-pc = 5-p
-
+pc = p[::-1]
 assert np.all(pc == np.array([4, 3, 2, 1]))
 
 r = np.array([3, 3, 5, 5])
-rc = r*1
+rc = r.copy()
 rc[1:3] = -1
 
 assert np.all(r[1:3] == np.array([3, 5])) and np.all(rc[1:3] == np.array([-1, -1]))
