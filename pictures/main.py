@@ -28,7 +28,7 @@ while video.isOpened():
 
         circle_area = np.pi * (radius ** 2)
 
-        if(area / circle_area > 0.8):
+        if(area / circle_area > 0.8 and area>100):
             sum +=1
 
     if sum >= 6 and len(contours) > 12 and len(contours) <= 18:
@@ -37,7 +37,7 @@ while video.isOpened():
         count += 1
 
     key = cv2.waitKey(1)
-    if key == ord('q'): 
+    if key == ord('q'):
         break
 
 video.release()
