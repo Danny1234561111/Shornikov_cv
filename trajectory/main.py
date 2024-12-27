@@ -12,13 +12,6 @@ for index in range(100):
 
 paths = {}
 
-for index in range(100):
-    file_name = 'out/h_' + str(index) + '.npy'
-    image_data = np.load(file_name).astype(np.uint8)
-    loaded_images.append(image_data)
-
-paths = {}
-
 def find_closest_index(x, y,paths):
     valid_indices = list(paths.keys())
 
