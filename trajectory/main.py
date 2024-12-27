@@ -1,8 +1,6 @@
 import numpy as np
-import os
 import cv2
 import matplotlib.pyplot as plt
-from skimage.measure import label, regionprops
 
 input_directory = 'out'
 loaded_images = []
@@ -19,14 +17,13 @@ for index in range(100):
     image_data = np.load(file_name).astype(np.uint8)
     loaded_images.append(image_data)
 
-# Инициализация словаря для хранения путей
 paths = {}
 
-# Измененная функция find_closest_index
 def find_closest_index(x, y,paths):
     valid_indices = list(paths.keys())
+
     closest_index = -1
-    min_distance = float('inf')  # Используем inf для инициализации
+    min_distance = 1000000000
     for idx in valid_indices:
         last_x, last_y = paths[idx][-1]
         distance = np.sqrt((last_x - x) ** 2 + (last_y - y) ** 2)
