@@ -23,7 +23,8 @@ for index in range(100):
 paths = {}
 
 # Измененная функция find_closest_index
-def find_closest_index(x, y, valid_indices, paths):
+def find_closest_index(x, y,paths):
+    valid_indices = list(paths.keys())
     closest_index = -1
     min_distance = float('inf')  # Используем inf для инициализации
     for idx in valid_indices:
@@ -45,9 +46,8 @@ for current_image in loaded_images[1:]:
     current_contours, _ = cv2.findContours(current_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     for contour in current_contours:
         (centroid_x, centroid_y), _ = cv2.minEnclosingCircle(contour)
-        available_indices = list(paths.keys())
 
-        closest_index = find_closest_index(centroid_x, centroid_y, available_indices, paths)
+        closest_index = find_closest_index(centroid_x, centroid_y,paths)
 
         paths[closest_index].append((centroid_x, centroid_y))
 
