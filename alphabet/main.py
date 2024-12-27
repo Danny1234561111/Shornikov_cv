@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from skimage.measure import label,regionprops, euler_number
 from collections import defaultdict
-from pathlib import Path
 
 
 im=plt.imread('symbols.png')[:,:,:3].mean(2)
