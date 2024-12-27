@@ -1,80 +1,62 @@
-import re
 import numpy as np
+import os
+import cv2
 import matplotlib.pyplot as plt
-from skimage.measure import regionprops, label
-from pathlib import Path
+from skimage.measure import label, regionprops
 
-def calculate_distance(point1: tuple, point2: tuple) -> float:
-    y1, x1 = point1
-    x2, y2 = point2
-    return ((x1 - x2)**2 + (y1 - y2)**2)**0.5
+input_directory = 'out'
+loaded_images = []
 
-def find_closest_center(centroids: tuple, regions, processed: list) -> tuple:
-    min_distance = float('inf')
-    closest_index = None
-    
-    for i, region in enumerate(regions):
-        if i not in processed:
-            distances = np.array([calculate_distance(centroid, region.centroid) for centroid in centroids])
-            if distances.mean() < min_distance:
-                min_distance = distances.mean()
-                closest_index = i
-    
-    return regions[closest_index].centroid, closest_index
+for index in range(100):
+    file_name = 'out/h_'+str(index)+'.npy'
+    image_data = np.load(file_name).astype(np.uint8)
+    loaded_images.append(image_data)
 
-def plot_changes(trajectory):
-    differences = np.abs(trajectory[1:] - trajectory[:-1])
-    plt.plot(differences, 'o')
-    plt.show()
+paths = {}
 
-def display_images(trajectories, image_list):
-    plt.ion()
-    for idx, img in enumerate(image_list):
-        plt.clf()
-        plt.title(idx)
-        plt.imshow(img)
-        for j, trajectory in enumerate(trajectories):
-            plt.scatter(trajectory[idx][0],
-                        trajectory[idx][1],
-                        c=['blue', 'red', 'green'][j],
-                        s=3)
-        
-        plt.pause(1)
+for index in range(100):
+    file_name = 'out/h_' + str(index) + '.npy'
+    image_data = np.load(file_name).astype(np.uint8)
+    loaded_images.append(image_data)
 
-def plot_trajectory_paths(trajectories):
-    for idx, trajectory in enumerate(trajectories):
-        plt.plot(trajectory[:, 0], trajectory[:, 1], label=f"Path {idx + 1}")
+# Инициализация словаря для хранения путей
+paths = {}
 
-    plt.legend()
-    plt.xlabel("X-axis")
-    plt.ylabel("Y-axis")
-    plt.show()
+# Измененная функция find_closest_index
+def find_closest_index(x, y, valid_indices, paths):
+    closest_index = -1
+    min_distance = float('inf')  # Используем inf для инициализации
+    for idx in valid_indices:
+        last_x, last_y = paths[idx][-1]
+        distance = np.sqrt((last_x - x) ** 2 + (last_y - y) ** 2)
+        if distance < min_distance:
+            min_distance = distance
+            closest_index = idx
+    return closest_index
 
-data_path = Path(__file__).parent / "motion/"
-data_files = sorted([str(file) for file in data_path.glob("*.npy")],
-                    key=lambda s: int(re.findall(r'\d+', s)[-1]))
 
-image_list = [np.load(file).astype(int) for file in data_files]
-trajectories = []
+initial_contours, _ = cv2.findContours(loaded_images[0], cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-for frame_index, frame in enumerate(image_list):
-    labeled_frame = label(frame)
-    regions = regionprops(labeled_frame)
-    processed_indices = []
+for contour_index, contour in enumerate(initial_contours):
+    (centroid_x, centroid_y), _ = cv2.minEnclosingCircle(contour)
+    paths[contour_index] = [(centroid_x, centroid_y)]
 
-    if not trajectories:
-        for region in regions:
-            cy, cx = region.centroid
-            trajectories.append([(float(cx), float(cy))])
-    else:
-        for trajectory_index, obj_trajectory in enumerate(trajectories):
-            depth = 3
-            recent_centroids = obj_trajectory[-depth:]
-            (new_y, new_x), closest_index = find_closest_center(recent_centroids, regions, processed_indices)
+for current_image in loaded_images[1:]:
+    current_contours, _ = cv2.findContours(current_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    for contour in current_contours:
+        (centroid_x, centroid_y), _ = cv2.minEnclosingCircle(contour)
+        available_indices = list(paths.keys())
 
-            trajectories[trajectory_index].append((float(new_x), float(new_y)))
-            processed_indices.append(closest_index)
+        closest_index = find_closest_index(centroid_x, centroid_y, available_indices, paths)
 
-trajectories = np.array(trajectories)
+        paths[closest_index].append((centroid_x, centroid_y))
 
-plot_trajectory_paths(trajectories
+plt.figure(figsize=(10, 10))
+for trajectory_index in paths.keys():
+    trajectory_points = np.array(paths[trajectory_index])
+    plt.plot(trajectory_points[:, 0], trajectory_points[:, 1], label=f'Объект {trajectory_index + 1}')
+plt.xlabel('X координаты')
+plt.ylabel('Y координаты')
+plt.title('Траектории объектов')
+plt.legend()
+plt.show()
