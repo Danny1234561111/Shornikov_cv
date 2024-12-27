@@ -28,31 +28,3 @@ for i in range(0,12):
 for i in range(0,12):
     print(f"{i+1} : {chet[i]}")
 print(f"Всего элементов -{np.sum(chet)}")
-
-# print(len(contours))
-#
-# arrow=contours[0]
-# cv2.drawContours(image,contours,0,(255,0,0),3)
-#
-#
-# print(f"area ={cv2.contourArea(arrow)}")
-# print(f"Perimeter = {cv2.arcLength(arrow,False)}")
-#
-# moments = cv2.moments(arrow)
-# print(f"Moments = {moments}")
-# centroid = (int(moments['m10']/(moments['m00'])),int(moments['m01']/moments['m00']))
-# print(f"Centroid - {centroid}")
-#
-# cv2.circle(image,centroid,4,(0,255,0),4)
-# eps=0.001 *cv2.arcLength(arrow,True)
-# approx = cv2.approxPolyDP(arrow,eps,True)
-# gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-#     _, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY_INV)
-#     contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-#     cactus_coords = []
-#     for contour in contours:
-#         area = cv2.contourArea(contour)
-#         if area > 60:  # Если площадь больше 60
-#             x, y, w, h = cv2.boundingRect(contour)
-#             if w > 10:  # Проверяем ширину
-#                 cactus_coords.append((x, y, w, h))
