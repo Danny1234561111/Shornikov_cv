@@ -9,9 +9,7 @@ for i in range(0,12):
     contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     for contour in contours:
         area = cv2.contourArea(contour)
-        if area > 1000:
-            x, y, w, h = cv2.boundingRect(contour)
-
+        if area > 1000:  # Если площадь больше 100
             rect = cv2.minAreaRect(contour)
             box = cv2.boxPoints(rect)
             width = int(rect[1][0])
