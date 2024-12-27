@@ -11,11 +11,8 @@ for i in range(0,12):
         area = cv2.contourArea(contour)
         if area > 1000:  # Если площадь больше 100
             rect = cv2.minAreaRect(contour)
-            box = cv2.boxPoints(rect)
             width = int(rect[1][0])
             height = int(rect[1][1])
-            # print(box)
-            box = np.int64(box)
             if (height>width*7 or width>height*7) and height>100 and width>100:  # Проверяем ширину
                 chet[i]+=1
 for i in range(0,12):
