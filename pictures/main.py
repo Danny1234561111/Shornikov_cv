@@ -42,4 +42,4 @@ while video.isOpened():
 
 video.release()
 cv2.destroyAllWindows()
-print("Количество кадров с 6 или более круглыми контурами:", count)
+print(count)
