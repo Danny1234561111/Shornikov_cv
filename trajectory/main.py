@@ -13,11 +13,10 @@ for index in range(100):
 paths = {}
 
 def find_closest_index(x, y,paths):
-    valid_indices = list(paths.keys())
 
     closest_index = -1
     min_distance = 1000000000
-    for idx in valid_indices:
+    for idx in paths.keys():
         last_x, last_y = paths[idx][-1]
         distance = np.sqrt((last_x - x) ** 2 + (last_y - y) ** 2)
         if distance < min_distance:
